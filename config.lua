@@ -16,11 +16,18 @@ lvim.keys.normal_mode["<C-Left>"] = ":bprev<CR>"
 
 
 lvim.plugins = {
-  "dccsillag/magma-nvim",
+  'luk400/vim-jukit',
   "ChristianChiarulli/swenv.nvim",
   "stevearc/dressing.nvim",
   "hrsh7th/nvim-cmp",
   { "folke/neodev.nvim", opts = {} },
+  {
+    'chipsenkbeil/distant.nvim',
+    branch = 'v0.3',
+    config = function()
+      require('distant'):setup()
+    end
+  },
 }
 
 lvim.builtin.which_key.mappings["C"] = {
