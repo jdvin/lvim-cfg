@@ -12,7 +12,7 @@ lvim.keys.normal_mode["|"] = ":vsplit<CR>"
 lvim.keys.normal_mode["-"] = ":split<CR>"
 lvim.keys.normal_mode["<C-Right>"] = ":bnext<CR>"
 lvim.keys.normal_mode["<C-Left>"] = ":bprev<CR>"
-
+lvim.keys.term_mode["<esc>"] = "<C-\\><C-n>"
 
 lvim.plugins = {
   "ChristianChiarulli/swenv.nvim",
