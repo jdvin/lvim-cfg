@@ -30,9 +30,14 @@ lvim.plugins = {
       end, 100)
     end,
   },
+  "nvim-telescope/telescope-live-grep-args.nvim",
 }
 
 lvim.builtin.which_key.mappings["C"] = {
   name = "Python",
   c = { "<cmd>lua require('swenv.api').pick_venv()<cr>", "Choose Env" },
+}
+
+lvim.builtin.which_key.mappings.s.t = {
+  require('telescope').extensions.live_grep_args.live_grep_args, "Live grep args",
 }
