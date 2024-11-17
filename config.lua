@@ -17,18 +17,57 @@ lvim.plugins = {
   "stevearc/dressing.nvim",
   "hrsh7th/nvim-cmp",
   { "folke/neodev.nvim", opts = {} },
+  "nvim-telescope/telescope-live-grep-args.nvim",
   {
-    "zbirenbaum/copilot-cmp",
-    event = "InsertEnter",
-    dependencies = { "zbirenbaum/copilot.lua" },
+    "supermaven-inc/supermaven-nvim",
     config = function()
-      vim.defer_fn(function()
-        require("copilot").setup()     -- https://github.com/zbirenbaum/copilot.lua/blob/master/README.md#setup-and-configuration
-        require("copilot_cmp").setup() -- https://github.com/zbirenbaum/copilot-cmp/blob/master/README.md#configuration
-      end, 100)
+      require("supermaven-nvim").setup({})
     end,
   },
-  "nvim-telescope/telescope-live-grep-args.nvim",
+  {
+    "yetone/avante.nvim",
+    event = "VeryLazy",
+    lazy = false,
+    version = false, -- set this if you want to always pull the latest change
+    opts = {
+      -- add any opts here
+    },
+    -- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
+    build = "make",
+    -- build = "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false" -- for windows
+    dependencies = {
+      "stevearc/dressing.nvim",
+      "nvim-lua/plenary.nvim",
+      "MunifTanjim/nui.nvim",
+      --- The below dependencies are optional,
+      "nvim-tree/nvim-web-devicons", -- or echasnovski/mini.icons
+      {
+        -- support for image pasting
+        "HakonHarnes/img-clip.nvim",
+        event = "VeryLazy",
+        opts = {
+          -- recommended settings
+          default = {
+            embed_image_as_base64 = false,
+            prompt_for_file_name = false,
+            drag_and_drop = {
+              insert_mode = true,
+            },
+            -- required for Windows users
+            use_absolute_path = true,
+          },
+        },
+      },
+      {
+        -- Make sure to set this up properly if you have lazy=true
+        'MeanderingProgrammer/render-markdown.nvim',
+        opts = {
+          file_types = { "markdown", "Avante" },
+        },
+        ft = { "markdown", "Avante" },
+      },
+    },
+  }
 }
 
 lvim.builtin.which_key.mappings["C"] = {
@@ -49,3 +88,41 @@ lvim.builtin.which_key.mappings.b.f = {
   "<cmd>Telescope buffers<cr>",
   "Find"
 }
+
+lvim.keys.insert_mode["<C-Space>"] = function()
+  require('cmp').complete()
+end
+lvim.lsp.automatic_configuration.skipped_servers = vim.tbl_filter(function(server)
+  return server ~= "pyright"
+end, lvim.lsp.automatic_configuration.skipped_servers)
+
+-- lvim.builtin.lualine.sections.lualine_c = {
+--   {
+--     'filename',
+--     path = 1, -- 0 = just filename, 1 = relative path, 2 = absolute path
+--     file_status = true,
+--     newfile_status = true,
+--     shorting_target = 40,
+--   }
+-- }
+
+-- local fmt_group = vim.api.nvim_create_augroup("LvimFormat", { clear = true })
+
+-- vim.api.nvim_create_autocmd("BufWritePre", {
+--   group = fmt_group,
+--   callback = function()
+--     local buf_name = vim.api.nvim_buf_get_name(0)
+--     local dir_to_exclude = vim.fn.expand("~/Code/vllm")
+
+--     if not string.find(buf_name, dir_to_exclude) then
+--       if vim.fn.exists(":LspFormatting") == 2 then
+--         vim.cmd("LspFormatting")
+--       elseif vim.fn.exists(":Format") == 2 then
+--         vim.cmd("Format")
+--       end
+--     end
+--   end,
+-- })
+
+-- -- Disable LunarVim's built-in format-on-save
+-- lvim.format_on_save = false
