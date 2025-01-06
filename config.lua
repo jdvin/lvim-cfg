@@ -96,6 +96,22 @@ lvim.lsp.automatic_configuration.skipped_servers = vim.tbl_filter(function(serve
   return server ~= "pyright"
 end, lvim.lsp.automatic_configuration.skipped_servers)
 
+-- Add taplo to your LSP configurations
+lvim.lsp.automatic_configuration.skipped_servers = vim.tbl_filter(function(server)
+  return server ~= "taplo"
+end, lvim.lsp.automatic_configuration.skipped_servers)
+
+-- Configure taplo
+local formatters = require "lvim.lsp.null-ls.formatters"
+formatters.setup({
+  {
+    name = "taplo",
+    filetypes = { "toml" },
+  },
+})
+
+vim.opt.shell = "/opt/homebrew/bin/fish"
+
 -- lvim.builtin.lualine.sections.lualine_c = {
 --   {
 --     'filename',
