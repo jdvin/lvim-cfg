@@ -112,6 +112,10 @@ formatters.setup({
 
 vim.opt.shell = "/opt/homebrew/bin/fish"
 
+vim.keymap.set({ 'n', 't' }, '<C-1>', '<cmd>1ToggleTerm direction=float<CR>', { silent = true })
+vim.keymap.set({ 'n', 't' }, '<C-2>', '<cmd>2ToggleTerm direction=horizontal<CR>', { silent = true })
+
+
 -- lvim.builtin.lualine.sections.lualine_c = {
 --   {
 --     'filename',
