@@ -67,6 +67,54 @@ lvim.plugins = {
         ft = { "markdown", "Avante" },
       },
     },
+  },
+  {
+    "anuvyklack/hydra.nvim",
+    lazy = false,
+    config = function()
+      local Hydra = require("hydra")
+      -- Window navigation
+      Hydra({
+        name = "Win move",
+        mode = "n",
+        body = "<leader>W",
+        heads = {
+          { "h", "<C-w>h" }, { "j", "<C-w>j" }, { "k", "<C-w>k" }, { "l", "<C-w>l" },
+          { "q", nil,     { exit = true } },
+        }
+      })
+      -- Window resize: press <leader>R then h/j/k/l to resize, q to exit
+      Hydra({
+        name = "Win resize",
+        mode = "n",
+        body = "<leader>R",
+        heads = {
+          { "h", "<cmd>vertical resize -2<CR>" },
+          { "l", "<cmd>vertical resize +2<CR>" },
+          { "j", "<cmd>resize -2<CR>" },
+          { "k", "<cmd>resize +2<CR>" },
+          { "q", nil, { exit = true } },
+          { "<Esc>", nil, { exit = true } },
+        }
+      })
+    end,
+  },
+  {
+    "mg979/vim-visual-multi",
+    branch = "master",
+    init = function()
+      -- Optional: make the keys explicit
+      vim.g.VM_default_mappings = 0
+      vim.g.VM_maps = {
+        ["Find Under"]         = "<C-n>",     -- add next occurrence
+        ["Find Subword Under"] = "<C-n>",
+        ["Select All"]         = "<leader>a", -- select all occurrences
+        ["Skip Region"]        = "<C-x>",     -- skip current
+        ["Remove Region"]      = "<C-p>",     -- remove current cursor
+        ["Add Cursor Down"]    = "<C-Down>",
+        ["Add Cursor Up"]      = "<C-Up>",
+      }
+    end,
   }
 }
 
@@ -114,6 +162,33 @@ vim.opt.shell = "/opt/homebrew/bin/fish"
 
 vim.keymap.set({ 'n', 't' }, '<C-1>', '<cmd>1ToggleTerm direction=float<CR>', { silent = true })
 vim.keymap.set({ 'n', 't' }, '<C-2>', '<cmd>2ToggleTerm direction=horizontal<CR>', { silent = true })
+
+
+
+-- Auto-reload files that change on disk
+vim.opt.autoread = true
+
+local grp = vim.api.nvim_create_augroup("AutoReloadOnExternalChange", { clear = true })
+
+-- Re-check timestamps when you come back to Neovim or linger in a buffer
+vim.api.nvim_create_autocmd({ "FocusGained", "TermClose", "TermLeave", "BufEnter", "CursorHold", "CursorHoldI" }, {
+  group = grp,
+  command = "checktime",
+})
+
+-- Friendly notification after a successful auto-reload
+vim.api.nvim_create_autocmd("FileChangedShellPost", {
+  group = grp,
+  callback = function(ev)
+    local msg = "Auto-reloaded: " .. vim.fn.fnamemodify(ev.file or "", ":.")
+    local ok, notify = pcall(require, "notify")
+    if ok then
+      notify(msg, vim.log.levels.INFO, { title = "LunarVim" })
+    else
+      vim.api.nvim_echo({ { msg, "ModeMsg" } }, false, {})
+    end
+  end,
+})
 
 
 -- lvim.builtin.lualine.sections.lualine_c = {
